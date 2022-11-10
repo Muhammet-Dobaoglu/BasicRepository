@@ -1,0 +1,117 @@
+1)Asp.Net.Model-view-Controlle
+3 tane kütüphane indirdik.
+Microsoft.Entity.Frameworks Tools/SqlServer/Core
+
+
+2)    "ConnectionStrings": {
+      "PersonelDatabase": "Server=DESKTOP-4GKM6HK\\SQLEXPRESS;Database=Basicrep2;Trusted_Connection=True;"
+    },
+    
+
+3)builder.Services.AddDbContext<MyContext>(options =>
+       options.UseSqlServer(builder.Configuration.GetConnectionString("Baglanti")));
+var app = builder.Build();
+
+4)repository oluþturduk
+using BasicRepository.context;
+using BasicRepository.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace BasicRepository.Repositories
+{
+    public class Repository<T> where T : class
+        //herhangi bir gelebilir
+        //t tip 
+        //T nesne herhangi bir harf olabilir.
+        //where T:class int string gibi deðiþkenler gelmez.
+        //Biizm yaptýðýmýz sýnýflarý istyiyor
+        //T t; T bir deðiþken tipi t
+    {
+
+        private readonly MyContext _db;
+        public Repository(MyContext db)
+        {
+            _db = db;
+        }
+        public List<T> Liste()
+        {
+            return Set().ToList();//þehir,personel büütn 
+        }
+        public T Find(int Id)
+        {
+            // return _db.Set<T>().Find(Id); bunlarý alttaki gibi çevirdik
+             return Set().Find(Id);
+
+        }
+        //Ulke ýd string 
+        public T Find(string  Id)
+        {
+            return Set().Find(Id);
+
+        }
+        public void Update(T entity)
+            //normalde personel tablosu yazýlýr.
+        {
+            Set().Update(entity);
+        }
+        public void Create(T entity)
+        //normalde personel tablosu yazýlýr.
+        {
+            Set().Add(entity);
+        }
+        public void Delete(T entity)
+        //normalde personel tablosu yazýlýr.
+        {
+            Set().Remove(entity);
+        }
+        public DbSet<T> Set()
+        {
+            return _db.Set<T>();
+            //genel set
+
+        }
+        public void Save()
+        {
+            _db.SaveChanges();
+            //save demedik
+            //elektrik kesintsinde patlar.
+
+        }
+    }
+}
+
+5)Program.cs
+  builder.Services.AddScoped<Repository<Personel>>();
+
+6)PersonelController ekledik.
+  public class PersonelController : Controller
+    {
+        private readonly Repository<Personel> _rep;
+        //newleme iþlemi
+        public PersonelController(Repository<Personel> rep)
+        {
+            _rep = rep;
+        }
+        //baþka yerde kullanmayalým diye
+    
+        public IActionResult List()
+        {
+
+            return View();
+        }
+    }
+
+    7)Crud methodu postu unutma.
+    8)
+     public bool Delete(T entity)
+        //normalde personel tablosu yazýlýr.
+        {
+
+            try
+            {
+                Set().Remove(entity);
+                return true;
+            }
+            catch { return false; }
+         
+        }

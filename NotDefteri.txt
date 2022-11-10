@@ -1,0 +1,34 @@
+-Context klasörü oluşturduk sınıf ekledik 
+  public MyContext(DbContextOptions<MyContext> db) : base(db)
+        {
+
+        }
+
+	  public DbSet<Personel> Personel { get; set; }   
+           
+-data klasörü oluşturduk
+props
+
+-bir önceki programdan appsettings bağlantısını kopyalayıp database ismini değiştirdik
+
+-bir önceki programdan Programs.cs kısmından aşağıdakini copy paste yaptık:
+builder.Services.AddDbContext<MyContext>(options =>
+       options.UseSqlServer(builder.Configuration.GetConnectionString("PersonelDatabase")));
+
+-Add-Migration ilk
+
+3-Update-Migration
+
+-repositories klasörü oluşturup class ekliyoruz
+- tüm metotlarımızı ekledik.
+-layout ekledik: <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Personel" asp-action="List">Personel</a>
+                        </li>
+-Program.cs'e builder.Services.AddScoped<Repository<Personel>>(); Ekledik newlememesi için.
+-Controller'a personelController ekledik
+-Scopeladığımızı controller'da newleme işlemi yaptık
+-public IActionResult List()
+        {
+            return View(_rep.Liste());
+        }
+komutuyla rep'ten Liste'yi çekerek bu komutu yazdık. Ardından view ekledik List()
